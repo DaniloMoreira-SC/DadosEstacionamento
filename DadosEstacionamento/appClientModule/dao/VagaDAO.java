@@ -33,7 +33,7 @@ public class VagaDAO {
 
 		rs.close();
 		ps.close();
-		rs.close();
+		conn.close();
 
 		return vaga;
 
@@ -60,4 +60,21 @@ public class VagaDAO {
 
 	}
 
+	public void liberarVaga(int numeroVaga) throws SQLException {
+
+		String sql = """
+				UPDATE VAGA
+				SET STATUSVAGA = 'LIVRE'
+				WHERE NUMEROVAGA = ?
+				""";
+
+		Connection conn = ConnectionFactory.getConnection();
+
+		PreparedStatement ps = conn.prepareStatement(sql);
+
+		ps.setInt(1, numeroVaga);
+
+		ps.close();
+		conn.close();
+	}
 }

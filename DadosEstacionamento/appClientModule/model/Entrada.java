@@ -3,21 +3,18 @@ package model;
 import java.time.LocalDateTime;
 
 public class Entrada {
-	// ATRIBUTO ENTRADA
 
 	private int idEntrada;
 	private String nomeCliente;
 	private String placa;
 	private String tipoVeiculo;
 
-	// ATRIBUTO SAIDA
 	private LocalDateTime dtEntrada;
 	private String statusVeiculo;
 
-	// ATRIBUTO VAGAS
-	private int numeroVaga;
+	private String tempoFormatado;
 
-	// GETTERS E SETTERS ENTRADA
+	private int numeroVaga;
 
 	public int getIdEntrada() {
 		return idEntrada;
@@ -51,7 +48,6 @@ public class Entrada {
 		this.tipoVeiculo = tipoVeiculo.toUpperCase();
 	}
 
-	// GETTERS E SETTERS SAIDA
 
 	public LocalDateTime getDtEntrada() {
 		return dtEntrada;
@@ -69,13 +65,20 @@ public class Entrada {
 		this.statusVeiculo = statusVeiculo;
 	}
 
-	// GETTERS E SETTERS NUMEROVAG
 	public int getNumeroVaga() {
 		return numeroVaga;
 	}
 
 	public void setNumeroVaga(int numeroVaga) {
 		this.numeroVaga = numeroVaga;
+	}
+
+	public String getTempoFormatado() {
+		return tempoFormatado;
+	}
+
+	public void setTempoFormatado(String tempoFormatado) {
+		this.tempoFormatado = tempoFormatado;
 	}
 
 }

@@ -43,11 +43,22 @@ public class EntradaDAO {
 	public Entrada buscarEntradaAberta(String placa) throws SQLException {
 
 		String sql = """
-				SELECT *
-				FROM ENTRADA
-				WHERE PLACA = ?
-				AND STATUSVEICULO = 'ABERTO'
-				""";
+					SELECT
+				      IDENTRADA
+				    , NOMECLIENTE
+				    , PLACA
+				    , TIPOVEICULO
+				    , NUMEROVAGA
+				    , DTENTRADA
+				    , STATUSVEICULO
+				    , TIMESTAMPDIFF(MINUTE, DTENTRADA, NOW()) AS TEMPO_MINUTOS
+				    , TIMEDIFF(NOW(), DTENTRADA) AS TEMPO_FORMATADO
+				FROM
+				    ENTRADA
+				WHERE
+				        PLACA = ?
+				    AND STATUSVEICULO = 'ABERTO';
+								""";
 
 		Connection conn = ConnectionFactory.getConnection();
 
@@ -78,6 +89,8 @@ public class EntradaDAO {
 			entrada.setStatusVeiculo(rs.getString("STATUSVEICULO"));
 
 			entrada.setNumeroVaga(rs.getInt("NUMEROVAGA"));
+
+			entrada.setTempoFormatado(rs.getString("TEMPO_FORMATADO"));
 
 		}
 
@@ -157,6 +170,8 @@ public class EntradaDAO {
 
 	}
 
+	// METODO LISTAR HISTORICO DE ENTRADA
+
 	public void listarHistorico() throws SQLException {
 
 		String sql = """
@@ -214,7 +229,7 @@ public class EntradaDAO {
 				System.out.println("Tempo: " + rs.getInt("TEMPO_MINUTOS") + " minutos");
 
 				System.out.printf("Valor Pago: R$ %.2f%n", rs.getDouble("VALOR_TOTAL"));
-				
+
 				System.out.println("\n");
 			}
 		}
@@ -228,6 +243,41 @@ public class EntradaDAO {
 		rs.close();
 		ps.close();
 		conn.close();
+
+	}
+
+	// METODO SE JA CONSTA A PLACA NO SISTEMA
+
+	public boolean veiculoEstaNoPatio(String placa) throws SQLException {
+
+		String sql = """
+				SELECT COUNT(*)
+				FROM ENTRADA
+				WHERE PLACA = ?
+				AND STATUSVEICULO = 'ABERTO'
+				""";
+
+		Connection conn = ConnectionFactory.getConnection();
+
+		PreparedStatement ps = conn.prepareStatement(sql);
+
+		ps.setString(1, placa.toUpperCase());
+
+		ResultSet rs = ps.executeQuery();
+
+		boolean existe = false;
+
+		if (rs.next()) {
+
+			existe = rs.getInt(1) > 0;
+
+		}
+
+		rs.close();
+		ps.close();
+		conn.close();
+
+		return existe;
 
 	}
 

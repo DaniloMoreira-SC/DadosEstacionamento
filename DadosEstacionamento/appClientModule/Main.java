@@ -9,12 +9,15 @@ import dao.TarifaDAO;
 import dao.VagaDAO;
 import model.Entrada;
 import model.Saida;
+import service.EstacionamentoService;
 
 public class Main {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 		Scanner scanner = new Scanner(System.in);
+
+		EstacionamentoService service = new EstacionamentoService();
 
 		EntradaDAO entradaDAO = new EntradaDAO();
 
@@ -39,50 +42,18 @@ public class Main {
 
 				try {
 
-					Entrada entrada = new Entrada();
-
-					System.out.print("Nome do cliente: ");
-					entrada.setNomeCliente(scanner.nextLine());
-
-					System.out.print("Digite a placa do veículo: ");
-					entrada.setPlaca(scanner.nextLine());
-
-					System.out.print("Digite o tipo do veículo (CARRO/MOTO): ");
-					entrada.setTipoVeiculo(scanner.nextLine());
-
-					// Procura uma vaga automaticamente
-					VagaDAO vagaDAO = new VagaDAO();
-
-					Integer vaga = vagaDAO.buscarVagaLivre();
-
-					if (vaga == null) {
-
-						System.out.println("Estacionamento lotado!");
-
-						break;
-					}
-
-					// Atribui a vaga encontrada ao veículo
-					entrada.setNumeroVaga(vaga);
-
-					System.out.println("\nVaga disponível encontrada: " + vaga);
-
-					// Salva a entrada
-					entradaDAO.inserir(entrada);
-
-					// Marca a vaga como ocupada
-					vagaDAO.ocuparVaga(vaga);
-
-					System.out.println("\nEntrada registrada com sucesso!");
+					service.registrarEntrada(scanner);
 
 				} catch (SQLException e) {
 
-					System.out.println("\nErro ao salvar no banco de dados!");
+					System.out.println("\nErro ao salvar no banco!");
+
 					System.out.println(e.getMessage());
 
 				}
 
 				break;
+
 			// MOSTRAR RECIBO
 
 			case 2:
@@ -130,6 +101,10 @@ public class Main {
 
 					saidaDAO.inserir(saida);
 
+					VagaDAO vagaDAO = new VagaDAO();
+
+					vagaDAO.liberarVaga(entrada.getNumeroVaga());
+
 					entradaDAO.finalizarEntrada(entrada.getIdEntrada());
 
 					System.out.println("\n===== RECIBO =====");
@@ -138,7 +113,7 @@ public class Main {
 
 					System.out.println("Placa: " + entrada.getPlaca());
 
-					System.out.println("Tempo: " + minutos + " minutos");
+					System.out.println("Tempo: " + entrada.getTempoFormatado());
 
 					System.out.printf("Valor: R$ %.2f%n", valorTotal);
 
