@@ -48,7 +48,6 @@ public class Entrada {
 		this.tipoVeiculo = tipoVeiculo.toUpperCase();
 	}
 
-
 	public LocalDateTime getDtEntrada() {
 		return dtEntrada;
 	}

@@ -2,6 +2,7 @@ package dao;
 
 import connection.ConnectionFactory;
 import model.Saida;
+import model.Pagamento;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,28 +15,21 @@ public class SaidaDAO {
 
 		String sql = """
 				INSERT INTO SAIDA
-				(IDENTRADA,
-				 DTSAIDA,
-				 TEMPO_MINUTOS,
-				 VALOR_TOTAL)
-				VALUES (?, ?, ?, ?)
+				(IDENTRADA, DTSAIDA, TEMPO_MINUTOS, VALOR_TOTAL, FORMAPAGAMENTO)
+				VALUES (?, ?, ?, ?, ?)
 				""";
 
-		Connection conn = ConnectionFactory.getConnection();
+		try (Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-		PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, saida.getIdEntrada());
+			ps.setTimestamp(2, Timestamp.valueOf(saida.getDtSaida()));
+			ps.setInt(3, saida.getTempoMinutos());
+			ps.setDouble(4, saida.getValorTotal());
+			ps.setString(5, saida.getFormaPagamento().getDescricao());
 
-		ps.setInt(1, saida.getIdEntrada());
+			ps.executeUpdate();
+			System.out.println("✅ Saída registrada com sucesso!");
 
-		ps.setTimestamp(2, Timestamp.valueOf(saida.getDtSaida()));
-
-		ps.setInt(3, saida.getTempoMinutos());
-
-		ps.setDouble(4, saida.getValorTotal());
-
-		ps.executeUpdate();
-
-		ps.close();
-		conn.close();
+		}
 	}
 }

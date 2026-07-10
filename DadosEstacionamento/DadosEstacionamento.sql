@@ -173,15 +173,18 @@ WHERE NOT EXISTS (
 UPDATE ENTRADA 
 SET 
     NOMECLIENTE = UPPER(NOMECLIENTE);
-
+    
 
 -- ====================================================================
 				-- CONSULTAS ÚTEIS
 -- ====================================================================
+SELECT * FROM TARIFA;
+
+SELECT * FROM SAIDA;
+
+SELECT * FROM ENTRADA;
 
 SELECT * FROM VAGA;
-
-SELECT * FROM entrada;
 
 SELECT
     *
@@ -191,19 +194,6 @@ WHERE
     STATUSVEICULO = 'ABERTO'
 ORDER BY
     NUMEROVAGA;
-
-SELECT
-      E.NOMECLIENTE
-    , E.PLACA
-    , S.DTSAIDA
-    , S.TEMPO_MINUTOS
-    , S.VALOR_TOTAL
-FROM
-    SAIDA S
-INNER JOIN
-    ENTRADA E
-ON
-    E.IDENTRADA = S.IDENTRADA;
 
 SELECT
       E.IDENTRADA
@@ -224,12 +214,4 @@ ON
     E.IDENTRADA = S.IDENTRADA
 ORDER BY
     E.IDENTRADA DESC;
-
-
-SELECT
-    COUNT(*)
-FROM
-    ENTRADA
-WHERE
-        PLACA = ?
-    AND STATUSVEICULO = 'ABERTO';
+    

@@ -281,4 +281,131 @@ public class EntradaDAO {
 
 	}
 
+	public void buscarVeiculoPorPlaca(String placa) throws SQLException {
+
+		String sql = """
+				SELECT
+				    E.IDENTRADA,
+				    E.NOMECLIENTE,
+				    E.PLACA,
+				    E.TIPOVEICULO,
+				    E.NUMEROVAGA,
+				    E.DTENTRADA,
+				    E.STATUSVEICULO,
+				    S.DTSAIDA,
+				    S.TEMPO_MINUTOS,
+				    S.VALOR_TOTAL
+				FROM ENTRADA E
+				LEFT JOIN SAIDA S ON E.IDENTRADA = S.IDENTRADA
+				WHERE E.PLACA = ?
+				ORDER BY E.IDENTRADA DESC
+				""";
+
+		Connection conn = ConnectionFactory.getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, placa.toUpperCase());
+
+		ResultSet rs = ps.executeQuery();
+
+		System.out.println("\n===== BUSCA POR PLACA =====");
+		System.out.println("Placa: " + placa.toUpperCase());
+		boolean encontrou = false;
+
+		while (rs.next()) {
+
+			encontrou = true;
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("ID: " + rs.getInt("IDENTRADA"));
+			System.out.println("Cliente: " + rs.getString("NOMECLIENTE"));
+			System.out.println("Tipo: " + rs.getString("TIPOVEICULO"));
+			System.out.println("Vaga: " + rs.getInt("NUMEROVAGA"));
+			System.out.println("Entrada: " + rs.getTimestamp("DTENTRADA"));
+			System.out.println("Status: " + rs.getString("STATUSVEICULO"));
+
+			if (rs.getString("STATUSVEICULO").equals("ABERTO")) {
+				System.out.println("✅ VEÍCULO AINDA NO PÁTIO!");
+			} else {
+				System.out.println("Saída: " + rs.getTimestamp("DTSAIDA"));
+				System.out.println("Tempo: " + rs.getInt("TEMPO_MINUTOS") + " minutos");
+				System.out.printf("Valor Pago: R$ %.2f%n", rs.getDouble("VALOR_TOTAL"));
+			}
+
+		}
+
+		if (!encontrou) {
+			System.out.println("\nNenhum veículo encontrado com essa placa.");
+		}
+
+		rs.close();
+		ps.close();
+		conn.close();
+
+	}
+
+	public void buscarHistoricoCliente(String nomeCliente) throws SQLException {
+
+		String sql = """
+				SELECT
+				    E.IDENTRADA,
+				    E.NOMECLIENTE,
+				    E.PLACA,
+				    E.TIPOVEICULO,
+				    E.NUMEROVAGA,
+				    E.DTENTRADA,
+				    E.STATUSVEICULO,
+				    S.DTSAIDA,
+				    S.TEMPO_MINUTOS,
+				    S.VALOR_TOTAL
+				FROM ENTRADA E
+				LEFT JOIN SAIDA S ON E.IDENTRADA = S.IDENTRADA
+				WHERE E.NOMECLIENTE LIKE ?
+				ORDER BY E.IDENTRADA DESC
+				""";
+
+		Connection conn = ConnectionFactory.getConnection();
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, "%" + nomeCliente.toUpperCase() + "%");
+
+		ResultSet rs = ps.executeQuery();
+
+		System.out.println("\n===== HISTÓRICO DO CLIENTE =====");
+		System.out.println("Cliente: " + nomeCliente);
+		boolean encontrou = false;
+		double totalGasto = 0;
+
+		while (rs.next()) {
+
+			encontrou = true;
+
+			System.out.println("\n-------------------------------------");
+			System.out.println("ID: " + rs.getInt("IDENTRADA"));
+			System.out.println("Placa: " + rs.getString("PLACA"));
+			System.out.println("Tipo: " + rs.getString("TIPOVEICULO"));
+			System.out.println("Entrada: " + rs.getTimestamp("DTENTRADA"));
+			System.out.println("Status: " + rs.getString("STATUSVEICULO"));
+
+			if (!rs.getString("STATUSVEICULO").equals("ABERTO")) {
+				System.out.println("Saída: " + rs.getTimestamp("DTSAIDA"));
+				System.out.println("Tempo: " + rs.getInt("TEMPO_MINUTOS") + " minutos");
+				double valor = rs.getDouble("VALOR_TOTAL");
+				System.out.printf("Valor: R$ %.2f%n", valor);
+				totalGasto += valor;
+			}
+
+		}
+
+		if (encontrou) {
+			System.out.println("\n-------------------------------------");
+			System.out.printf("💰 TOTAL GASTO: R$ %.2f%n", totalGasto);
+		} else {
+			System.out.println("\nNenhum registro encontrado para esse cliente.");
+		}
+
+		System.out.println("==================================");
+		rs.close();
+		ps.close();
+		conn.close();
+
+	}
 }

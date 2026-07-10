@@ -4,50 +4,58 @@ import java.time.LocalDateTime;
 
 public class Saida {
 
-	private int idSaida;
-	private int idEntrada;
-	private LocalDateTime dtSaida;
-	private int tempoMinutos;
-	private double valorTotal;
+    private int idSaida;
+    private int idEntrada;
+    private LocalDateTime dtSaida;
+    private int tempoMinutos;
+    private double valorTotal;
+    private Pagamento formaPagamento;
 
-	public int getIdSaida() {
-		return idSaida;
-	}
+    public int getIdSaida() {
+        return idSaida;
+    }
 
-	public void setIdSaida(int idSaida) {
-		this.idSaida = idSaida;
-	}
+    public void setIdSaida(int idSaida) {
+        this.idSaida = idSaida;
+    }
 
-	public int getIdEntrada() {
-		return idEntrada;
-	}
+    public int getIdEntrada() {
+        return idEntrada;
+    }
 
-	public void setIdEntrada(int idEntrada) {
-		this.idEntrada = idEntrada;
-	}
+    public void setIdEntrada(int idEntrada) {
+        this.idEntrada = idEntrada;
+    }
 
-	public LocalDateTime getDtSaida() {
-		return dtSaida;
-	}
+    public LocalDateTime getDtSaida() {
+        return dtSaida;
+    }
 
-	public void setDtSaida(LocalDateTime dtSaida) {
-		this.dtSaida = dtSaida;
-	}
+    public void setDtSaida(LocalDateTime dtSaida) {
+        this.dtSaida = dtSaida;
+    }
 
-	public int getTempoMinutos() {
-		return tempoMinutos;
-	}
+    public int getTempoMinutos() {
+        return tempoMinutos;
+    }
 
-	public void setTempoMinutos(int tempoMinutos) {
-		this.tempoMinutos = tempoMinutos;
-	}
+    public void setTempoMinutos(int tempoMinutos) {
+        this.tempoMinutos = tempoMinutos;
+    }
 
-	public double getValorTotal() {
-		return valorTotal;
-	}
+    public double getValorTotal() {
+        return valorTotal;
+    }
 
-	public void setValorTotal(double valorTotal) {
-		this.valorTotal = valorTotal;
-	}
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
+    }
 
+    public Pagamento getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(Pagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
+    }
 }

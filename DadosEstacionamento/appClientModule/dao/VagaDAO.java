@@ -19,24 +19,18 @@ public class VagaDAO {
 				LIMIT 1
 				""";
 
-		Connection conn = ConnectionFactory.getConnection();
+		try (Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-		PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			Integer vaga = null;
 
-		ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				vaga = rs.getInt("NUMEROVAGA");
+			}
+			rs.close();
+			return vaga;
 
-		Integer vaga = null;
-
-		if (rs.next()) {
-			vaga = rs.getInt("NUMEROVAGA");
 		}
-
-		rs.close();
-		ps.close();
-		conn.close();
-
-		return vaga;
-
 	}
 
 	public void ocuparVaga(int numeroVaga) throws SQLException {
@@ -47,17 +41,16 @@ public class VagaDAO {
 				WHERE NUMEROVAGA = ?
 				""";
 
-		Connection conn = ConnectionFactory.getConnection();
+		try (Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-		PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, numeroVaga);
+			int linhas = ps.executeUpdate();
 
-		ps.setInt(1, numeroVaga);
+			if (linhas == 0) {
+				System.out.println("⚠️ Aviso: Vaga " + numeroVaga + " não foi encontrada!");
+			}
 
-		ps.executeUpdate();
-
-		ps.close();
-		conn.close();
-
+		}
 	}
 
 	public void liberarVaga(int numeroVaga) throws SQLException {
@@ -68,13 +61,17 @@ public class VagaDAO {
 				WHERE NUMEROVAGA = ?
 				""";
 
-		Connection conn = ConnectionFactory.getConnection();
+		try (Connection conn = ConnectionFactory.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
-		PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, numeroVaga);
+			int linhas = ps.executeUpdate();
 
-		ps.setInt(1, numeroVaga);
+			if (linhas > 0) {
+				System.out.println("✅ Vaga " + numeroVaga + " LIBERADA com sucesso!");
+			} else {
+				System.out.println("❌ ERRO: Vaga " + numeroVaga + " não foi liberada!");
+			}
 
-		ps.close();
-		conn.close();
+		}
 	}
 }
