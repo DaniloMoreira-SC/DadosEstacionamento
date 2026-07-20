@@ -88,7 +88,7 @@ public class Main {
 	}
 
 	private static void exibirMenu() {
-		System.out.println("\n==== ESTACIONAMENTO ====");
+		System.out.println("\n======= ESTACIONAMENTO =======");
 		System.out.println("1 - Registrar Entrada");
 		System.out.println("2 - Registrar Saída");
 		System.out.println("3 - Listar Veículos no Pátio");
@@ -99,7 +99,7 @@ public class Main {
 		System.out.println("8 - Vagas Disponíveis");
 		System.out.println("9 - Relatório Geral");
 		System.out.println("0 - Sair");
-		System.out.println("========================");
+		System.out.println("========================================");
 	}
 
 	private static void registrarEntrada(EstacionamentoService service, Scanner scanner) {
@@ -114,6 +114,7 @@ public class Main {
 	private static void registrarSaida(EntradaDAO entradaDAO, TarifaDAO tarifaDAO, Scanner scanner) {
 		try {
 			System.out.print("Informe a placa: ");
+
 			String placaSaida = scanner.nextLine().trim().toUpperCase();
 
 			Entrada entrada = entradaDAO.buscarEntradaAberta(placaSaida);
@@ -137,6 +138,27 @@ public class Main {
 			} else {
 				long minutosExtra = minutos - 60;
 				valorTotal = valorHora + (minutosExtra > 0 ? (minutosExtra / 60.0) * valorHoraExtra : 0);
+			}
+
+			System.out.println("\n========================================");
+			System.out.println("            CÁLCULO DE SAÍDA              ");
+			System.out.println(" Cliente: " + entrada.getNomeCliente());
+			System.out.println(" Placa: " + entrada.getPlaca());
+			System.out.println(" Vaga: " + entrada.getNumeroVaga());
+
+			// Formata tempo
+			long horas = minutos / 60;
+			long mins = minutos % 60;
+			System.out.printf(" Tempo estacionado: %02d:%02d:%02d          %n", horas, mins, 0);
+			System.out.printf(" Valor a cobrar: R$ %.2f               %n", valorTotal);
+			System.out.println("========================================");
+
+			System.out.print("\n✅ Deseja registrar a saída? (s/n): ");
+			String confirmacao = scanner.nextLine().trim().toLowerCase();
+
+			if (!confirmacao.equals("s")) {
+				System.out.println("❌ Operação cancelada!");
+				return;
 			}
 
 			// Exibir forma de pagamento
@@ -189,7 +211,7 @@ public class Main {
 		System.out.printf("Tempo: %02d:%02d:00%n", horas, mins);
 		System.out.println("Forma de Pagamento: " + pagamento.getDescricao());
 		System.out.printf("Valor Total: R$ %.2f%n", valor);
-		System.out.println("============================\n");
+		System.out.println("========================================\n");
 	}
 
 	private static void buscarVeiculoPorPlaca(EntradaDAO entradaDAO, Scanner scanner) {
