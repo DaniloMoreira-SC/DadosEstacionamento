@@ -1,4 +1,4 @@
-# Sistema de Gerenciamento de Estacionamento
+## Sistema de Gerenciamento de Estacionamento
 
 Sistema desenvolvido em **Java**, utilizando **JDBC** e **MySQL**, com foco na aplicação dos conceitos de Programação Orientada a Objetos, persistência de dados e regras de negócio.
 
